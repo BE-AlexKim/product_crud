@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: ACON
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/carpenstreet
+    username: root
+    password: rlgus585
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    defer-datasource-initialization: true
