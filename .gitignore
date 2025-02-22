@@ -8,6 +8,9 @@ build/
 !**/src/test/**/build/
 application-yml
 
+*.lock
+*.bin
+
 ### STS ###
 .apt_generated
 .classpath
