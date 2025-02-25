@@ -1,0 +1,54 @@
+server:
+  port: 9095
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  application:
+    name: ACON
+  ## 데이터 베이스 주소 설정
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/carpenstreet
+    username: root
+    password: rlgus585
+  ## JPA 설정
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    defer-datasource-initialization: true #hibernate 초기화 이후 동작 옵션 설정
+    show-sql: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
+  ## data.sql 실행 여부 설정
+  sql:
+    init:
+      mode: never #초기 데이터 삽입 시 always로 변경
+  ## JWT 설정
+  jwt:
+    properties:
+      issuer: Carpenstreet
+      algorithm: HS256
+      secret-key: N5UPZEWGCWohYLUAwm1p_a5k1pJ1coz0f98XrtTB85E
+      access-token-expires-time: 7200000
+      refresh-token-expires-time: 60480000000000
+
+## Spring doc 설정
+springdoc:
+  api-docs:
+    enabled: true
+  api-info:
+    title: Carpenstreet Employment Exam API document
+    description: (주)카펜스트리트 입사시험 API 문서입니다
+    version: v1.0 RELEASE
+    server-url:
+      - http://localhost:9095
+  use-management-port: false
