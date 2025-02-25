@@ -1,0 +1,12 @@
+${AnsiColor.BLUE} _____   ___  ____________ _____ _   _  _____ ___________ _____ _____ _____
+${AnsiColor.BRIGHT_YELLOW}/  __ \ / _ \ | ___ \ ___ \  ___| \ | |/  ___|_   _| ___ \  ___|  ___|_   _|
+${AnsiColor.BRIGHT_YELLOW}| /  \// /_\ \| |_/ / |_/ / |__ |  \| |\ `--.  | | | |_/ / |__ | |__   | |
+${AnsiColor.CYAN}| |    |  _  ||    /|  __/|  __|| . ` | `--. \ | | |    /|  __||  __|  | |
+${AnsiColor.YELLOW}| \__/\| | | || |\ \| |   | |___| |\  |/\__/ / | | | |\ \| |___| |___  | |
+${AnsiColor.GREEN} \____/\_| |_/\_| \_\_|   \____/\_| \_/\____/  \_/ \_| \_\____/\____/  \_/
+
+
+${AnsiColor.BRIGHT_CYAN} CARPENSTREET EMPLOYMENT EXAM PROJECT ::: (v${application.version})
+${AnsiColor.BRIGHT_RED} Powered by Spring Boot ::: ${spring-boot.version}
+
+
