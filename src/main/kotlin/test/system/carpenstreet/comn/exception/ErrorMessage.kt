@@ -25,6 +25,8 @@ enum class ErrorMessage(
     DEFAULT(HttpStatus.INTERNAL_SERVER_ERROR,"SE0001","서버 오류"),
 
     /** 회원가입 관련 오류 **/
+    DUPLICATE_LOGIN_ID(HttpStatus.BAD_REQUEST,"JE0005","이미 사용중인 아이디입니다."),
+    LOGIN_ID_REQUIRE_VALUE(HttpStatus.BAD_REQUEST,"JE0004","로그인 아이디는 필수값입니다."),
     UNSUPPORTED_USER_ROLE(HttpStatus.BAD_REQUEST,"JE0003","지원하지 않는 역할입니다."),
     PHONE_REQUIRE_VALUE(HttpStatus.BAD_REQUEST,"JE0002","휴대폰은 필수값입니다."),
     NAME_REQUIRE_VALUE(HttpStatus.BAD_REQUEST,"JE0001","이름은 필수값입니다."),

@@ -55,8 +55,8 @@ class SecurityConfig constructor(
 
                 .requestMatchers(
                     HttpMethod.POST,
-                    "/api/v1/signup",
-                    "/api/v1/login",
+                    "/api/v1/user/signup",
+                    "/api/v1/user/login",
                 ).permitAll()
 
                 .requestMatchers(

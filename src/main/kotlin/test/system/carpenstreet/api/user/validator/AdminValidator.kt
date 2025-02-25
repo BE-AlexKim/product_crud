@@ -2,7 +2,6 @@ package test.system.carpenstreet.api.user.validator
 
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
-import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.api.user.model.enums.UserRole
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
@@ -25,7 +24,6 @@ class AdminValidator: UserSignupValidator {
 
     @Throws(CarpenStreetException::class)
     override fun validate(request: SignupRequestDTO) {
-        require(request.name.isNullOrEmpty()) { throw CarpenStreetException(ErrorMessage.NAME_REQUIRE_VALUE) }
-
+        require(!request.name.isNullOrEmpty()) { throw CarpenStreetException(ErrorMessage.NAME_REQUIRE_VALUE) }
     }
 }

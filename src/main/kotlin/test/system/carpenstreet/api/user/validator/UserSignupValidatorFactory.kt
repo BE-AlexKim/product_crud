@@ -1,7 +1,7 @@
 package test.system.carpenstreet.api.user.validator
 
 import org.springframework.stereotype.Component
-import test.system.carpenstreet.api.user.model.enums.UserRole
+import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 
@@ -18,12 +18,17 @@ import test.system.carpenstreet.comn.exception.ErrorMessage
  */
 @Component
 class UserSignupValidatorFactory(
-    private val validator: List<UserSignupValidator>
+    private val validators: List<UserSignupValidator>
 ) {
 
     @Throws(CarpenStreetException::class)
-    fun getValidator(role: UserRole): UserSignupValidator {
-        return validator.firstOrNull { it.supports(role)}
-            ?: throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
+    fun validate(request: SignupRequestDTO) {
+        val applicableValidator =  validators.filter { it.supports(request.role) }
+
+        if ( applicableValidator.isEmpty()) {
+            throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
+        }
+
+        applicableValidator.forEach { it.validate(request) }
     }
 }

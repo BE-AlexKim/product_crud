@@ -3,12 +3,13 @@ package test.system.carpenstreet.api.user.validator
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
 import test.system.carpenstreet.api.user.model.enums.UserRole
+import test.system.carpenstreet.api.user.repository.UserRepository
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 
 /**
  *packageName    : test.system.carpenstreet.api.user.validator
- * fileName       : PartnerValidator
+ * fileName       : CommonValidator
  * author         : joy58
  * date           : 2025-02-25
  * description    :
@@ -17,14 +18,19 @@ import test.system.carpenstreet.comn.exception.ErrorMessage
  * -----------------------------------------------------------
  * 2025-02-25        joy58       최초 생성
  */
-
 @Component
-class PartnerValidator: UserSignupValidator {
+class CommonValidator(
+    private val userRepository: UserRepository
+): UserSignupValidator {
 
-    override fun supports(role: UserRole) = role == UserRole.ROLE_PARTNER
+    // 모든 사용자에게 적용
+    override fun supports(role: UserRole) = true
 
+    @Throws(CarpenStreetException::class)
     override fun validate(request: SignupRequestDTO) {
-        require(!request.name.isNullOrEmpty()) { throw CarpenStreetException(ErrorMessage.NAME_REQUIRE_VALUE)}
-        require(!request.phoneNumber.isNullOrEmpty()) { throw CarpenStreetException(ErrorMessage.PHONE_REQUIRE_VALUE)}
+        require(request.loginId.isNotEmpty()) { throw CarpenStreetException(ErrorMessage.LOGIN_ID_REQUIRE_VALUE)}
+        require(!userRepository.existsByLoginId(request.loginId)) {
+            throw CarpenStreetException(ErrorMessage.DUPLICATE_LOGIN_ID)
+        }
     }
 }
