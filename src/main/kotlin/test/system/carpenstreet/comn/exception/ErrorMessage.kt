@@ -24,6 +24,11 @@ enum class ErrorMessage(
     /** 서버 오류 **/
     DEFAULT(HttpStatus.INTERNAL_SERVER_ERROR,"SE0001","서버 오류"),
 
+    /** 회원가입 관련 오류 **/
+    UNSUPPORTED_USER_ROLE(HttpStatus.BAD_REQUEST,"JE0003","지원하지 않는 역할입니다."),
+    PHONE_REQUIRE_VALUE(HttpStatus.BAD_REQUEST,"JE0002","휴대폰은 필수값입니다."),
+    NAME_REQUIRE_VALUE(HttpStatus.BAD_REQUEST,"JE0001","이름은 필수값입니다."),
+
     /** 로그인 관련 오류 **/
     DECRYPT_TOLE_FAIL(HttpStatus.UNAUTHORIZED,"LE0008","토큰 복호화에 실패하였습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"LE0007","유효하지 않은 토큰입니다."),

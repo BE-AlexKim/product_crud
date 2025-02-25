@@ -44,11 +44,11 @@ data class User(
 
     @Column(name = "user_name", nullable = false)
     @Comment("이름")
-    val name: String,
+    val name: String? = null,
 
     @Column(name = "phone_number")
     @Comment("핸드폰번호")
-    val phoneNumber: String,
+    val phoneNumber: String? = null,
 
     @Column(name = "user_role", nullable = false)
     @Comment("사용자 권한")

@@ -11,6 +11,7 @@ import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.api.user.model.enums.UserRole
 import test.system.carpenstreet.api.user.repository.UserRepository
 import test.system.carpenstreet.api.user.service.UserService
+import test.system.carpenstreet.api.user.validator.UserSignupValidatorFactory
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 import test.system.carpenstreet.comn.security.jwt.JwtToken
@@ -33,7 +34,8 @@ class UserServiceImpl constructor(
     private val userRepository: UserRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val passwordEncoder: BCryptPasswordEncoder
+    private val passwordEncoder: BCryptPasswordEncoder,
+    private val userSignupValidatorFactory: UserSignupValidatorFactory
 ): UserService {
 
     @Transactional
@@ -48,6 +50,9 @@ class UserServiceImpl constructor(
     @Transactional
     @Throws(CarpenStreetException::class)
     override fun signup(request: SignupRequestDTO) {
+        val validator = userSignupValidatorFactory.getValidator(request.roles)
+        validator.validate(request) // 회원별 필수요소 검증
+
         userRepository.save(User(
             uuid = UUID.randomUUID().toString(),
             loginId = request.loginId,
