@@ -17,4 +17,6 @@ enum class ProductPostingStatus(private val desc: String) {
     UNDER_REVIEW("검토 중"),
     REJECT_REVIEW("검토 거절"),
     CLEAR_REVIEW("검토 완료");
+
+    fun description() = desc
 }
