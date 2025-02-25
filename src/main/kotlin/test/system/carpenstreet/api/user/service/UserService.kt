@@ -25,5 +25,4 @@ interface UserService {
     @Transactional
     fun signup(request: SignupRequestDTO)
 
-
 }

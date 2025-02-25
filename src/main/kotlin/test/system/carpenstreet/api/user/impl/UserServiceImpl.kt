@@ -1,4 +1,4 @@
-package test.system.carpenstreet.api.user.service.impl
+package test.system.carpenstreet.api.user.impl
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -13,7 +13,6 @@ import test.system.carpenstreet.api.user.repository.UserRepository
 import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.api.user.validator.UserSignupValidatorFactory
 import test.system.carpenstreet.comn.exception.CarpenStreetException
-import test.system.carpenstreet.comn.exception.ErrorMessage
 import test.system.carpenstreet.comn.security.jwt.JwtToken
 import test.system.carpenstreet.comn.security.jwt.JwtTokenProvider
 import java.util.UUID
@@ -50,8 +49,7 @@ class UserServiceImpl constructor(
     @Transactional
     @Throws(CarpenStreetException::class)
     override fun signup(request: SignupRequestDTO) {
-        val validator = userSignupValidatorFactory.getValidator(request.roles)
-        validator.validate(request) // 회원별 필수요소 검증
+        userSignupValidatorFactory.validate(request) // 회원가입 데이터 검증
 
         userRepository.save(User(
             uuid = UUID.randomUUID().toString(),

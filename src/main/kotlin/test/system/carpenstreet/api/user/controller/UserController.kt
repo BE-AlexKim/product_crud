@@ -10,6 +10,8 @@ import test.system.carpenstreet.api.user.model.dto.LoginRequestDTO
 import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
 import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.comn.security.jwt.JwtToken
+import test.system.carpenstreet.comn.swagger.explain.LoginDocument
+import test.system.carpenstreet.comn.swagger.explain.SignupDocument
 
 /**
  *packageName    : test.system.carpenstreet.api.user.controller
@@ -29,11 +31,13 @@ class UserController constructor(
     private val userService: UserService
 ){
 
+    @SignupDocument
     @PostMapping("/signup")
     fun signup(@RequestBody request: SignupRequestDTO) {
         userService.signup(request)
     }
 
+    @LoginDocument
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequestDTO): ResponseEntity<JwtToken> {
         val login = userService.login(request)
