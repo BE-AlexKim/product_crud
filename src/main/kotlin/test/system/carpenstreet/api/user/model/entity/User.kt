@@ -3,8 +3,12 @@ package test.system.carpenstreet.api.user.model.entity
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Comment
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import test.system.carpenstreet.api.user.model.enums.UserRole
 import java.time.LocalDateTime
+import java.util.UUID
 
 /**
  *packageName    : test.system.carpenstreet.api.user.model.entity
@@ -25,6 +29,10 @@ data class User(
     @Column(name = "user_id")
     @Comment("사용자 일련번호")
     val id: Long? = null,
+
+    @Column(name = "uuid", nullable = false, unique = true)
+    @Comment("사용자 UUID")
+    val uuid: String = UUID.randomUUID().toString(),
 
     @Column(name = "login_id", nullable = false)
     @Comment("로그인 아이디")
@@ -54,4 +62,33 @@ data class User(
     @Column(name = "update_at")
     @Comment("최초 수정일시")
     val updateAt: LocalDateTime? = null
-)
+): UserDetails {
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return mutableListOf(SimpleGrantedAuthority(role.name))
+    }
+
+    override fun getPassword(): String {
+        return loginPw
+    }
+
+    override fun getUsername(): String {
+        return loginId
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
+    }
+}
