@@ -54,6 +54,11 @@ class SecurityConfig constructor(
             .authorizeHttpRequests { auth -> auth
 
                 .requestMatchers(
+                    "/api/v1/product/{productId}/submit",
+                    "/api/v1/product/temporary"
+                ).hasAuthority("ROLE_PARTNER")
+
+                .requestMatchers(
                     HttpMethod.POST,
                     "/api/v1/user/signup",
                     "/api/v1/user/login",
@@ -73,6 +78,10 @@ class SecurityConfig constructor(
                 ).permitAll()
 
                 .anyRequest().authenticated()
+            }
+
+            .exceptionHandling { handler -> handler
+                .accessDeniedHandler(AccessDeniedHandler())
             }
 
             .addFilterBefore(
