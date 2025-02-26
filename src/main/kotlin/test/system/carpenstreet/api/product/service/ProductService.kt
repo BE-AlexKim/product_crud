@@ -2,7 +2,10 @@ package test.system.carpenstreet.api.product.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import test.system.carpenstreet.api.product.repository.ProductRepository
+import test.system.carpenstreet.api.product.model.dto.ProductSubmitRequestDTO
+import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
+import test.system.carpenstreet.api.product.model.entity.Product
+import test.system.carpenstreet.comn.exception.CarpenStreetException
 
 /**
  *packageName    : test.system.carpenstreet.api.product.service
@@ -20,13 +23,15 @@ interface ProductService {
 
     /**
      * 작가 상품 등록 (임시 저장)
+     * @param request: 상품 임시등록 요청 객체
+     * @return 상품 엔티티
      */
-    fun temporaryProduct()
+    fun temporaryProduct(request: ProductTemporalRequestDTO): Product
 
     /**
      * 상품 검토 요청 ( 작가 )
      */
-    fun submitProduct()
+    fun submitProduct(productId: Long, requestDTO: ProductSubmitRequestDTO)
 
     /**
      * 상품 검토 완료
@@ -46,5 +51,5 @@ interface ProductService {
     /**
      * 상품 상세 조회
      */
-    fun getProduct()
+    fun getProduct(productId: Long): Product
 }

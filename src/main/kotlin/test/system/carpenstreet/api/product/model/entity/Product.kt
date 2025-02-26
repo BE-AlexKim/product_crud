@@ -1,8 +1,11 @@
 package test.system.carpenstreet.api.product.model.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
+import org.hibernate.Hibernate
 import org.hibernate.annotations.Comment
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
+import test.system.carpenstreet.api.user.model.entity.User
 import java.time.LocalDateTime
 
 /**
@@ -28,27 +31,33 @@ data class Product(
     @Enumerated(EnumType.STRING)
     @Column(name = "product_posting_status")
     @Comment("상품 게시 상태")
-    val productPostingStatus: ProductPostingStatus,
+    var productPostingStatus: ProductPostingStatus,
 
     @Column(name = "product_title")
     @Comment("상품 제목")
-    val productTitle: String,
+    var productTitle: String?,
 
-    @Column(name = "product_content")
+    @Column(name = "product_content", columnDefinition = "TEXT")
     @Comment("상품 본문")
-    val productContent: String,
+    var productContent: String?,
 
     @Column(name = "product_pridce")
     @Comment("상품 가격(원화)")
-    val productPrice: Int,
+    var productPrice: Int?,
 
-    @Column(name = "creator_id")
     @Comment("작가 일련번호")
-    val creatorId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    val creatorId: User,
 
-    @Column(name = "consent_id")
-    @Comment("검토자 일련번호")
-    val consentId: Long? = null,
+    @Column(name = "consentor_name")
+    @Comment("검토자 이름")
+    val consentorName: String? = null,
+
+    @Column(name = "msg_to_consentor")
+    @Comment("작가 메세지")
+    val message: String? = null,
 
     @Column(name = "create_at")
     @Comment("최초 생성일시")
@@ -56,6 +65,22 @@ data class Product(
 
     @Column(name = "update_at")
     @Comment("최종 수정일시")
-    val updateAt: LocalDateTime? = null
+    var updateAt: LocalDateTime? = null
 
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+        other as Product
+
+        return id != null && id == other.id
+    }
+
+    override fun hashCode(): Int = javaClass.hashCode()
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , productPostingStatus = $productPostingStatus , productTitle = $productTitle , productContent = $productContent , productPrice = $productPrice , consentorName = $consentorName , creatAt = $creatAt , updateAt = $updateAt )"
+    }
+
+}
