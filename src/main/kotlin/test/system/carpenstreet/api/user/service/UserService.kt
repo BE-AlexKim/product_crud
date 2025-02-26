@@ -3,6 +3,7 @@ package test.system.carpenstreet.api.user.service
 import org.springframework.transaction.annotation.Transactional
 import test.system.carpenstreet.api.user.model.dto.LoginRequestDTO
 import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
+import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.comn.security.jwt.JwtToken
 
 
@@ -19,10 +20,10 @@ import test.system.carpenstreet.comn.security.jwt.JwtToken
  */
 interface UserService {
 
-    @Transactional
     fun login(request: LoginRequestDTO): JwtToken
 
-    @Transactional
     fun signup(request: SignupRequestDTO)
+
+    fun findByUuid(uuid: String): User
 
 }

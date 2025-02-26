@@ -13,6 +13,7 @@ import test.system.carpenstreet.api.user.repository.UserRepository
 import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.api.user.validator.UserSignupValidatorFactory
 import test.system.carpenstreet.comn.exception.CarpenStreetException
+import test.system.carpenstreet.comn.exception.ErrorMessage
 import test.system.carpenstreet.comn.security.jwt.JwtToken
 import test.system.carpenstreet.comn.security.jwt.JwtTokenProvider
 import java.util.UUID
@@ -59,5 +60,16 @@ class UserServiceImpl constructor(
             name = request.name,
             role = UserRole.ROLE_USER
         ))
+    }
+
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun findByUuid(uuid: String): User {
+        val isExistUser = userRepository.findByUuid(uuid)
+        return if ( isExistUser.isPresent ) {
+            isExistUser.get()
+        }else {
+            throw CarpenStreetException(ErrorMessage.USER_NOT_EXIST)
+        }
     }
 }

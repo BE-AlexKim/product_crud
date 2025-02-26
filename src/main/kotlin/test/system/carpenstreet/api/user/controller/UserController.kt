@@ -33,8 +33,9 @@ class UserController constructor(
 
     @SignupDocument
     @PostMapping("/signup")
-    fun signup(@RequestBody request: SignupRequestDTO) {
+    fun signup(@RequestBody request: SignupRequestDTO): ResponseEntity<Boolean> {
         userService.signup(request)
+        return ResponseEntity.ok(true)
     }
 
     @LoginDocument
