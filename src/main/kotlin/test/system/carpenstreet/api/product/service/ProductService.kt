@@ -1,9 +1,12 @@
 package test.system.carpenstreet.api.product.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import test.system.carpenstreet.api.product.model.dto.ProductSubmitRequestDTO
 import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
+import test.system.carpenstreet.api.product.model.dto.ProductsResponseDTO
 import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 
@@ -46,7 +49,7 @@ interface ProductService {
     /**
      * 상품 목록 조회
      */
-    fun getProducts()
+    fun getProducts(uuid: String, pageable: Pageable): Page<ProductsResponseDTO>
 
     /**
      * 상품 상세 조회

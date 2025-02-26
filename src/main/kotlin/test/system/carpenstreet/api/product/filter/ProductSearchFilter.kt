@@ -1,8 +1,7 @@
-package test.system.carpenstreet.api.product.validator
+package test.system.carpenstreet.api.product.filter
 
-import org.springframework.data.domain.Page
+import com.querydsl.core.types.dsl.BooleanExpression
 import org.springframework.data.domain.Pageable
-import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.api.user.model.enums.UserRole
 
@@ -17,10 +16,10 @@ import test.system.carpenstreet.api.user.model.enums.UserRole
  * -----------------------------------------------------------
  * 2025-02-26        joy58       최초 생성
  */
-interface ProductSearchValidator {
+interface ProductSearchFilter {
 
     fun supports(role: UserRole): Boolean
 
-    fun search(user: User, pageable: Pageable): Page<Product>
+    fun getFilter(user: User, pageable: Pageable): BooleanExpression
 
 }

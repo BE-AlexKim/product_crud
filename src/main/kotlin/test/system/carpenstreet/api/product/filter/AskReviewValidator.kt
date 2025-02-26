@@ -1,5 +1,6 @@
-package test.system.carpenstreet.api.product.validator
+package test.system.carpenstreet.api.product.filter
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
@@ -22,6 +23,8 @@ import test.system.carpenstreet.comn.exception.ErrorMessage
 class AskReviewValidator(
     private val productRepository: ProductRepository
 ): ProductCreateValidator {
+
+    private val log = KotlinLogging.logger {}
 
     override fun supports(postingStatus: ProductPostingStatus) = postingStatus == ProductPostingStatus.ASK_REVIEW
 

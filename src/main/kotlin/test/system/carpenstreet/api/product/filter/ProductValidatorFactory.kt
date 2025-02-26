@@ -1,9 +1,9 @@
-package test.system.carpenstreet.api.product.validator
+package test.system.carpenstreet.api.product.filter
 
+import com.querydsl.core.types.dsl.BooleanExpression
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
-import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
 import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
@@ -21,21 +21,10 @@ import test.system.carpenstreet.comn.exception.ErrorMessage
  */
 @Component
 class ProductValidatorFactory constructor(
-    private val productSearchValidators: List<ProductSearchValidator>,
     private val productCreateValidator: List<ProductCreateValidator>
 ){
 
-    fun searchValidator(user: User, pageable: Pageable ) {
-        val applicableValidator = productSearchValidators.filter { it.supports(user.role) }
-
-        if ( applicableValidator.isEmpty() ) {
-            throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
-        }
-
-        applicableValidator.forEach { it.search(user, pageable) }
-    }
-
-    fun createValidator(request: ProductTemporalRequestDTO) {
+    fun productGeneratedValidator(request: ProductTemporalRequestDTO) {
         val applicableValidator = productCreateValidator.filter { it.supports(request.postingStatus) }
 
         if ( applicableValidator.isEmpty() ) {

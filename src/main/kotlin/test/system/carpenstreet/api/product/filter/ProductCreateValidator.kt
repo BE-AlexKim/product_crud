@@ -1,8 +1,7 @@
-package test.system.carpenstreet.api.product.validator
+package test.system.carpenstreet.api.product.filter
 
 import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
-import test.system.carpenstreet.api.user.model.entity.User
 
 /**
  *packageName    : test.system.carpenstreet.api.product.validator

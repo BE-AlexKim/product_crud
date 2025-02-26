@@ -48,8 +48,7 @@ data class Product(
     @Comment("작가 일련번호")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
-    val creatorId: User,
+    val creator: User,
 
     @Column(name = "consentor_name")
     @Comment("검토자 이름")
