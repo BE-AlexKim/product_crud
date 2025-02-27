@@ -1,4 +1,4 @@
-package test.system.carpenstreet.comn.swagger.explain
+package test.system.carpenstreet.comn.swagger.document
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
