@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.function.ServerRequest.Headers
+import test.system.carpenstreet.comn.exception.CarpenStreetException
 import java.util.Optional
 
 /**
@@ -25,6 +26,7 @@ class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {
 
+    @Throws(CarpenStreetException::class)
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
