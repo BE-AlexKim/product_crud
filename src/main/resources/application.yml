@@ -9,3 +9,13 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+## 문자메세지 발송 정보
+message:
+  secret-key: sl21dfqhc8q81030hdf01h821832403Dsdwk==
+  from: 0211332031
+  notification-send-url: https://notification.sample-api.com
+
+translate:
+  secret-key: 293j0Tdj20WW1238df0w0sAWEwkks==
+  translate-uri: https://translation.sample-api.com

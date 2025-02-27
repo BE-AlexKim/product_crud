@@ -14,6 +14,7 @@ import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.api.user.validator.UserSignupValidatorFactory
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
+import test.system.carpenstreet.comn.security.AuthenticationFacade
 import test.system.carpenstreet.comn.security.jwt.JwtToken
 import test.system.carpenstreet.comn.security.jwt.JwtTokenProvider
 import java.util.UUID
@@ -35,7 +36,8 @@ class UserServiceImpl constructor(
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: BCryptPasswordEncoder,
-    private val userSignupValidatorFactory: UserSignupValidatorFactory
+    private val userSignupValidatorFactory: UserSignupValidatorFactory,
+    private val authenticationFacade: AuthenticationFacade
 ): UserService {
 
     @Transactional

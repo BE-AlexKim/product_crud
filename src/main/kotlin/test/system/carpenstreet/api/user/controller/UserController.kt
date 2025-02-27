@@ -10,8 +10,8 @@ import test.system.carpenstreet.api.user.model.dto.LoginRequestDTO
 import test.system.carpenstreet.api.user.model.dto.SignupRequestDTO
 import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.comn.security.jwt.JwtToken
-import test.system.carpenstreet.comn.swagger.explain.LoginDocument
-import test.system.carpenstreet.comn.swagger.explain.SignupDocument
+import test.system.carpenstreet.comn.swagger.document.LoginDocument
+import test.system.carpenstreet.comn.swagger.document.SignupDocument
 
 /**
  *packageName    : test.system.carpenstreet.api.user.controller
