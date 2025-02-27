@@ -55,8 +55,15 @@ class SecurityConfig constructor(
 
                 .requestMatchers(
                     "/api/v1/product/{productId}/submit",
-                    "/api/v1/product/temporary"
+                    "/api/v1/product/create",
+                    "/api/v1/product/{productId}/update"
                 ).hasAuthority("ROLE_PARTNER")
+
+                .requestMatchers(
+                    "/api/v1/product/{productId}/under",
+                    "/api/v1/product/{productId}/update",
+                    "/api/v1/product/{productId}/reject",
+                ).hasAuthority("ROLE_ADMIN")
 
                 .requestMatchers(
                     HttpMethod.POST,
