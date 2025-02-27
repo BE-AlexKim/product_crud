@@ -3,6 +3,7 @@ package test.system.carpenstreet.api.translate.model.entity
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Comment
+import test.system.carpenstreet.api.product.model.entity.Product
 import java.time.LocalDateTime
 import java.util.Locale
 
@@ -26,17 +27,21 @@ data class Translate(
     @Comment("번역 일련번호")
     val id: Long? = null,
 
-    @Column(name = "translate_code", nullable = false)
-    @Comment("번역 코드 값")
+    @Column(name = "translate_code")
+    @Comment("번역 코드값")
     val translateCode: String,
 
     @Column(name = "translate_locale", nullable = false, length = 10)
     @Comment("지원 언어")
     val locale: String,
 
-    @Column(name = "translate_message", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "translate_message", columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     @Comment("번역 텍스트")
     val message: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    val product: Product,
 
     @Column(name = "create_at")
     @Comment("최초 생성일시")
@@ -58,6 +63,6 @@ data class Translate(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , translateCode = $translateCode , locale = $locale , message = $message , createAt = $createAt , updateAt = $updateAt )"
+        return this::class.simpleName + "(id = $id, locale = $locale , message = $message , createAt = $createAt , updateAt = $updateAt )"
     }
 }
