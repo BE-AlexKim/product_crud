@@ -50,13 +50,25 @@ data class Product(
     @JoinColumn(name = "user_id")
     val creator: User,
 
+    @Comment("상품 버전")
+    @Column(name = "product_version")
+    val version: Int = 1,
+
+    @Comment("상품 활성화 여부")
+    @Column(name = "is_active")
+    val isActive: Boolean = false,
+
     @Column(name = "consentor_name")
     @Comment("검토자 이름")
-    val consentorName: String? = null,
+    var consentorName: String? = null,
 
-    @Column(name = "msg_to_consentor")
+    @Column(name = "ask_message")
     @Comment("작가 메세지")
-    val message: String? = null,
+    var message: String? = null,
+
+    @Column(name = "reject_message")
+    @Comment("거절 사유")
+    var rejectMessage: String? = null,
 
     @Column(name = "create_at")
     @Comment("최초 생성일시")

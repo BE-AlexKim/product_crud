@@ -1,7 +1,10 @@
-package test.system.carpenstreet.api.product.filter
+package test.system.carpenstreet.api.product.validator
 
 import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
+import test.system.carpenstreet.api.product.model.dto.ProductUpdateRequestDTO
+import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
+import test.system.carpenstreet.api.user.model.enums.UserRole
 
 /**
  *packageName    : test.system.carpenstreet.api.product.validator
@@ -14,10 +17,12 @@ import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
  * -----------------------------------------------------------
  * 2025-02-26        joy58       최초 생성
  */
-interface ProductCreateValidator {
+interface ProductValidator {
 
-    fun supports(postingStatus: ProductPostingStatus): Boolean
+    fun supports(userRole: UserRole): Boolean
 
-    fun postingValidator(request: ProductTemporalRequestDTO)
+    fun productCreatedValidator(request: ProductTemporalRequestDTO)
+
+    fun productUpdateValidator(product: Product, request: ProductUpdateRequestDTO)
 
 }

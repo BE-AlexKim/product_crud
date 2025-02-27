@@ -4,26 +4,30 @@ import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.ComparableExpressionBase
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import test.system.carpenstreet.api.product.model.dto.ProductSubmitRequestDTO
-import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
-import test.system.carpenstreet.api.product.model.dto.ProductsResponseDTO
+import test.system.carpenstreet.api.message.service.MessageService
+import test.system.carpenstreet.api.product.model.dto.*
 import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.product.model.entity.QProduct
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
 import test.system.carpenstreet.api.product.repository.ProductRepository
 import test.system.carpenstreet.api.product.service.ProductService
 import test.system.carpenstreet.api.product.service.ProductValidationService
+import test.system.carpenstreet.api.translate.model.dto.TranslateEvent
+import test.system.carpenstreet.api.translate.service.TranslateService
 import test.system.carpenstreet.api.user.model.entity.QUser
 import test.system.carpenstreet.api.user.service.UserService
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
+import test.system.carpenstreet.comn.security.AuthenticationFacade
 import java.time.LocalDateTime
+import java.util.*
 
 /**
  *packageName    : test.system.carpenstreet.api.product.service.impl
@@ -42,15 +46,26 @@ class ProductServiceImpl constructor(
     private val productRepository: ProductRepository,
     private val validationService: ProductValidationService,
     private val queryFactory: JPAQueryFactory,
+    private val messageService: MessageService,
+    private val authenticationFacade: AuthenticationFacade,
+    private val translateService: TranslateService,
+    private val eventPublisher: ApplicationEventPublisher
 ): ProductService{
 
+    /**
+     * 작가 상품 임시저장 서비스
+     * @param request: ProductTemporalRequestDTO(임시저장 요청 객체)
+     * @return 등록 성공 유무
+     */
     @Transactional
     @Throws(CarpenStreetException::class)
-    override fun temporaryProduct(request: ProductTemporalRequestDTO): Product {
-        val user = userService.findByUuid(request.uuid)
+    override fun createProduct(request: ProductTemporalRequestDTO): Boolean {
+        val uuid = authenticationFacade.getUsername()
+        val user = userService.findByUuid(uuid)
+
         validationService.createProductValidate(request)
 
-        return request.productId?.let { id ->
+        request.productId?.let { id ->
             val product = productRepository.findById(id).orElseThrow {
                 CarpenStreetException(ErrorMessage.PRODUCT_NOT_EXIST)
             }
@@ -72,33 +87,129 @@ class ProductServiceImpl constructor(
                 )
             )
         }
+        return true
     }
 
+    /**
+     *  상품 수정 서비스 ( 작가, 매니저 )
+     *  @param request: ProductUpdateRequestDTO(상품 수정 요청 객체)
+     *  @return 수정 실패 유무
+     */
+    @Transactional
+    override fun updateProduct(productId: Long, request: ProductUpdateRequestDTO): Boolean {
+        val product = getProduct(productId)
+        validationService.updateProductValidate(product, request)
+
+        // 검토완료된 내용을 수정할 경우,
+        if ( product.productPostingStatus == ProductPostingStatus.CLEAR_REVIEW && request.postingStatus == ProductPostingStatus.ASK_REVIEW ) {
+            val uuid = authenticationFacade.getUsername()
+            productRepository.save(
+                Product(
+                    productPostingStatus = ProductPostingStatus.ASK_REVIEW,
+                    productTitle = request.productTitle ?: product.productTitle,
+                    productContent =  request.productContent ?: product.productContent,
+                    productPrice = request.productPrice ?: product.productPrice,
+                    creator = userService.findByUuid(uuid),
+                    version = product.version + 1,
+                    isActive = false,
+                    consentorName = product.consentorName
+                )
+            )
+        }else {
+            if ( product.productPostingStatus == ProductPostingStatus.REJECT_REVIEW ) {
+                // 거절 상품의 경우 제목과 본문 변경 시, 번역 재호출
+                eventPublisher.publishEvent(TranslateEvent(product.id!!))
+            }else {
+                product.productTitle = request.productTitle ?: product.productTitle
+                request.productContent = request.productContent ?: product.productContent
+                product.productPostingStatus = request.postingStatus
+                request.productPrice?.let { product.productPrice = it }
+                product.updateAt = LocalDateTime.now()
+            }
+
+        }
+
+        return true
+    }
+
+    /**
+     * 작가 상품 검토 요청 서비스
+     * @param productId: Long(상품 일련번호)
+     * @param request: ProductSubmitRequestDTO(상품 검토요청 객체)
+     * @return Boolean 성공 유무
+     */
     @Transactional
     @Throws(CarpenStreetException::class)
-    override fun submitProduct(productId: Long, requestDTO: ProductSubmitRequestDTO) {
+    override fun submitProduct(productId: Long, request: ProductSubmitRequestDTO): Boolean {
+        val uuid = authenticationFacade.getUsername()
         val product = getProduct(productId)
+
+        if ( product.creator.uuid != uuid ) {
+            throw CarpenStreetException(ErrorMessage.PRODUCT_USER_NOT_MATCH)
+        }
+        request.productMessage.let { product.message = it }
         product.productPostingStatus = ProductPostingStatus.ASK_REVIEW
         product.updateAt = LocalDateTime.now()
+
+        return true
     }
 
+    /**
+     * 상품 검토중 전환 서비스 (매니저 권한 )
+     * @param productId: Long
+     * @return Boolean 검토 중 전환 성공 여부
+     * @exception CarpenStreetException
+     */
     @Transactional
-    override fun approveProduct() {
-        TODO("Not yet implemented")
+    @Throws(CarpenStreetException::class)
+    override fun underReviewProduct(productId: Long): Boolean {
+        val product = getProduct(productId)
+        validationService.underProductFilter(product)
+
+        val managerUuid = authenticationFacade.getUsername()
+        val manager = userService.findByUuid(managerUuid)
+
+        product.productPostingStatus = ProductPostingStatus.UNDER_REVIEW
+        product.consentorName = manager.name
+        product.updateAt = LocalDateTime.now()
+
+        // 상품 제목과 본문 텍스트 번역
+        eventPublisher.publishEvent(TranslateEvent(productId))
+
+        // 실제 동작하지 않기 때문에 주석 처리
+        messageService.sendMessageToPartnerByProduct(product, ProductPostingStatus.UNDER_REVIEW)
+
+        return true
     }
 
-    @Transactional
-    override fun rejectProduct() {
-        TODO("Not yet implemented")
-    }
-
+    /**
+     * 상품 목록 조회 서비스
+     * @param uuid: 사용자 UUID
+     * @param pageable: 페이지네이션
+     * @return 상품 목록 페이지네이션
+     */
     @Transactional
     override fun getProducts(uuid: String, pageable: Pageable): Page<ProductsResponseDTO> {
         val user = userService.findByUuid(uuid)
-        val filter = validationService.getFilterByUser(user, pageable)
+        val filter = validationService.getFilterByUser(user)
 
         val qProduct = QProduct.product
         val qUser = QUser.user
+
+        // Sort 추가 정의
+        fun Sort.toQueryDslOrder(qProduct: QProduct): Array<OrderSpecifier<*>> {
+            return this.mapNotNull { order ->
+                val path: ComparableExpressionBase<*>? = when(order.property) {
+                    "title" -> qProduct.productTitle
+                    "status" -> qProduct.productPostingStatus
+                    "name" -> qProduct.creator.name
+                    else -> null
+                }
+                path.let {
+                    if ( order.isAscending) it?.asc() else it?.desc()
+                }
+            }.toTypedArray()
+        }
 
         val query = queryFactory
             .select(
@@ -126,6 +237,7 @@ class ProductServiceImpl constructor(
         return PageImpl(query.fetch(), pageable, total ?: 0 )
     }
 
+
     @Transactional
     @Throws(CarpenStreetException::class)
     override fun getProduct(productId: Long): Product {
@@ -133,17 +245,34 @@ class ProductServiceImpl constructor(
             .orElseThrow { throw CarpenStreetException(ErrorMessage.PRODUCT_NOT_EXIST) }
     }
 
-    fun Sort.toQueryDslOrder(qProduct: QProduct): Array<OrderSpecifier<*>> {
-        return this.mapNotNull { order ->
-            val path: ComparableExpressionBase<*>? = when(order.property) {
-                "title" -> qProduct.productTitle
-                "status" -> qProduct.productPostingStatus
-                "name" -> qProduct.creator.name
-                else -> null
-            }
-            path.let {
-                if ( order.isAscending) it?.asc() else it?.desc()
-            }
-        }.toTypedArray()
+
+
+    @Transactional
+    override fun approveProduct() {
+        TODO("Not yet implemented")
     }
+
+
+    /**
+     *  상품 검토 거절 서비스
+     *  @param productId: Long(상품 일련번호)
+     *  @param request: ProductRejectRequestDTO(상품 거절 요청 객체)
+     *  @return 거절 유무
+     **/
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun rejectProduct(productId: Long, request: ProductRejectRequestDTO): Boolean {
+
+        val product = getProduct(productId)
+        messageService.sendMessageToPartnerByProduct(product, ProductPostingStatus.REJECT_REVIEW)
+
+        product.productPostingStatus = ProductPostingStatus.REJECT_REVIEW
+        product.rejectMessage = request.message
+        product.updateAt = LocalDateTime.now()
+
+        translateService.deleteTranslate(product)
+
+        return true
+    }
+
 }

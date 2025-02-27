@@ -13,6 +13,7 @@ package test.system.carpenstreet.api.product.model.enums
  */
 enum class ProductPostingStatus(private val desc: String) {
     TEMPORARY("임시 저장"),
+    SAVE_REVIEW("저장"),
     ASK_REVIEW("검토 요청"),
     REASK_REVIEW("재검토 요청"),
     UNDER_REVIEW("검토 중"),

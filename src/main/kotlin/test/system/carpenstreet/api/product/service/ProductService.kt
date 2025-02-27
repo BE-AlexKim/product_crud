@@ -3,12 +3,8 @@ package test.system.carpenstreet.api.product.service
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import test.system.carpenstreet.api.product.model.dto.ProductSubmitRequestDTO
-import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
-import test.system.carpenstreet.api.product.model.dto.ProductsResponseDTO
+import test.system.carpenstreet.api.product.model.dto.*
 import test.system.carpenstreet.api.product.model.entity.Product
-import test.system.carpenstreet.comn.exception.CarpenStreetException
 
 /**
  *packageName    : test.system.carpenstreet.api.product.service
@@ -26,25 +22,33 @@ interface ProductService {
 
     /**
      * 작가 상품 등록 (임시 저장)
-     * @param request: 상품 임시등록 요청 객체
-     * @return 상품 엔티티
      */
-    fun temporaryProduct(request: ProductTemporalRequestDTO): Product
+    fun createProduct(request: ProductTemporalRequestDTO): Boolean
 
     /**
      * 상품 검토 요청 ( 작가 )
      */
-    fun submitProduct(productId: Long, requestDTO: ProductSubmitRequestDTO)
+    fun submitProduct(productId: Long, request: ProductSubmitRequestDTO): Boolean
 
     /**
-     * 상품 검토 완료
+     * 상품 검토 중 ( 매니저 )
+     */
+    fun underReviewProduct(productId: Long): Boolean
+
+    /**
+     * 상품 검토 완료 ( 매니저 )
      */
     fun approveProduct()
 
     /**
-     *  상품 검토 거절
+     * 상품 수정
      */
-    fun rejectProduct()
+    fun updateProduct(productId: Long, request: ProductUpdateRequestDTO): Boolean
+
+    /**
+     *  상품 검토 거절 ( 매니저 )
+     */
+    fun rejectProduct(productId: Long, request: ProductRejectRequestDTO): Boolean
 
     /**
      * 상품 목록 조회

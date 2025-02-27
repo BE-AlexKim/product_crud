@@ -1,7 +1,6 @@
 package test.system.carpenstreet.api.product.filter
 
 import com.querydsl.core.types.dsl.BooleanExpression
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.product.model.entity.QProduct
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
@@ -9,8 +8,8 @@ import test.system.carpenstreet.api.user.model.entity.User
 import test.system.carpenstreet.api.user.model.enums.UserRole
 
 /**
- *packageName    : test.system.carpenstreet.api.product.validator
- * fileName       : SearchPartnerValidation
+ *packageName    : test.system.carpenstreet.api.product.filter
+ * fileName       : SearchAdminFilter
  * author         : joy58
  * date           : 2025-02-26
  * description    :
@@ -20,21 +19,20 @@ import test.system.carpenstreet.api.user.model.enums.UserRole
  * 2025-02-26        joy58       최초 생성
  */
 @Component
-class SearchPartnerFilter: ProductSearchFilter {
+class ProductAdminFilter: ProductFilter {
 
-    override fun supports(role: UserRole) = role == UserRole.ROLE_PARTNER
+    override fun supports(role: UserRole) = role == UserRole.ROLE_ADMIN
 
-    override fun getFilter(user: User, pageable: Pageable): BooleanExpression {
+    override fun getFilter(user: User): BooleanExpression {
         val qProduct = QProduct.product
         return qProduct.productPostingStatus.`in`(
             listOf(
-                ProductPostingStatus.TEMPORARY,
                 ProductPostingStatus.ASK_REVIEW,
                 ProductPostingStatus.CLEAR_REVIEW,
                 ProductPostingStatus.REASK_REVIEW,
                 ProductPostingStatus.REJECT_REVIEW,
                 ProductPostingStatus.UNDER_REVIEW,
             )
-        ).and(qProduct.creator.eq(user))
+        )
     }
 }
