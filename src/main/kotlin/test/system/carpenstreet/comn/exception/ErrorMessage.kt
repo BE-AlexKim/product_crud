@@ -25,10 +25,23 @@ enum class ErrorMessage(
     DEFAULT(HttpStatus.INTERNAL_SERVER_ERROR,"SE0001","서버 오류"),
     ACCESS_DENIED(HttpStatus.NOT_ACCEPTABLE,"SE0002","접근 권한이 없습니다."),
 
+    /** 번역 관련 오류 **/
+    UNSUPPORTED_LANGUAGE(HttpStatus.BAD_REQUEST, "LX0001","지원하지 않는 언어입니다."),
+    TRANSLATE_CODE_NOT_EXIST(HttpStatus.BAD_REQUEST,"LX0002","번역값이 존재하지 않습니다."),
+
+    /** 메세지 서비스 오류 **/
+    MESSAGE_SEND_ERROR(HttpStatus.BAD_REQUEST,"ME0001","메세지 전송에 실패하였습니다."),
+    HTTP_CLIENT_ERROR(HttpStatus.BAD_REQUEST,"ME0002","메시지 전송 오류"),
+    HTTP_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"ME0003","메시지 서버 오류"),
+    HTTP_NETWORK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"ME0004","메세지 전송 중 네트워크 오류"),
+    PHONE_NUMBER_NOT_EXIST(HttpStatus.BAD_REQUEST,"ME0005","휴대폰 정보가 존재하지 않습니다."),
+
     /** 사용자 관련 오류 **/
     UUID_IS_NOT_NULL(HttpStatus.BAD_REQUEST,"UE0001","사용자 일련번호가 존재하지 않습니다."),
 
     /** 상품 관련 오류 **/
+    PRODUCT_DO_NOT_CHANGE_POSTING_STATUS(HttpStatus.BAD_REQUEST,"PE0007","검토 요청 상품이 아닌 경우, 검토중으로 변환할 수 없습니다."),
+    PRODUCT_USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "PE0006","해당 상품의 작가와 일치하지 않습니다."),
     UNSUPPORTED_POSTING_STATUS(HttpStatus.BAD_REQUEST,"PE0005","올바른 저장방식이 아닙니다."),
     PRODUCT_PRICE_NOT_NULL(HttpStatus.BAD_REQUEST,"PE0004","상품 가격을 입력해주세요."),
     PRODUCT_CONTENT_NOT_NULL(HttpStatus.BAD_REQUEST,"PE0003","상품 본문을 입력해주세요."),
