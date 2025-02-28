@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.hibernate.annotations.Comment
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
+import test.system.carpenstreet.api.translate.model.entity.Translate
 import test.system.carpenstreet.api.user.model.entity.User
 import java.time.LocalDateTime
 

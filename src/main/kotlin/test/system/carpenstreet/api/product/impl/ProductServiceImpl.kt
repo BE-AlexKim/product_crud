@@ -4,7 +4,10 @@ import com.querydsl.core.types.Expression
 import com.querydsl.core.types.ExpressionUtils
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.jpa.impl.JPAQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -54,6 +57,9 @@ class ProductServiceImpl constructor(
     private val translateService: TranslateService,
     private val eventPublisher: ApplicationEventPublisher
 ): ProductService{
+
+    @PersistenceContext
+    private lateinit var entityManager: EntityManager
 
     /**
      * 작가 상품 임시저장 서비스
@@ -210,6 +216,7 @@ class ProductServiceImpl constructor(
         val filter = validationService.getProductsFilter(user)
 
         val qProduct = QProduct.product
+        val qTranslate = QTranslate.translate
         val qUser = QUser.user
 
         val query = queryFactory
@@ -218,12 +225,18 @@ class ProductServiceImpl constructor(
                     ProductsResponseDTO::class.java,
                     qProduct.id.`as`("productId"),
                     qProduct.productPostingStatus.`as`("productPostingStatus"),
-                    qProduct.productTitle.`as`("productTitle"),
+                    Expressions.stringTemplate(
+                        "CASE WHEN {0} = {1} THEN {2} ELSE {0} END",
+                        qProduct.productTitle,
+                        qTranslate.translateCode,
+                        qTranslate.message
+                    ).`as`("productTitle"),
                     qProduct.creator.name.`as`("creatorName"),
                 )
             )
             .from(qProduct)
             .join(qUser).on(qProduct.creator.eq(qUser))
+            .leftJoin(qTranslate).on(qTranslate.translateCode.eq(qProduct.productTitle))
             .offset(pageable.offset)
             .orderBy(*pageable.sort.toQueryDslOrder(qProduct))
             .where(*filter.toTypedArray())
@@ -269,7 +282,22 @@ class ProductServiceImpl constructor(
         val qTranslate = QTranslate.translate
         val qProduct = QProduct.product
 
-        return queryFactory
+        val productContentSubQuery = JPAQuery<Void>(entityManager)
+            .select(
+                Expressions.stringTemplate(
+                    "CASE WHEN {0} = {1} THEN {2} ELSE {0} END",
+                    qProduct.productContent,
+                    qTranslate.translateCode,
+                    qTranslate.message
+                )
+            )
+            .from(qTranslate)
+            .where(qTranslate.product.eq(product)
+                .and(qTranslate.translateCode.eq(qProduct.productContent))
+                .and(qTranslate.locale.eq(locale)))
+            .fetchOne()
+
+        val query = queryFactory
             .select(
                 Projections.fields(
                     ProductDetailResponseDTO::class.java,
@@ -280,19 +308,19 @@ class ProductServiceImpl constructor(
                         qTranslate.message
                     ).`as`("productTitle"),
                     Expressions.stringTemplate(
-                        "CASE WHEN {0} = {1} THEN {2} ELSE {0} END",
-                        qProduct.productContent,
-                        qTranslate.translateCode,
-                        qTranslate.message
+                        "{0}",
+                        productContentSubQuery
                     ).`as`("productContent"),
                     qProduct.productPrice.`as`("productPrice"),
                     qProduct.creator.name.`as`("creatorName")
                 )
             )
             .from(qProduct)
-            .leftJoin(qTranslate).on(qTranslate.product.eq(qProduct))
+            .leftJoin(qTranslate).on(qTranslate.product.id.eq(qProduct.id))
             .where(*filter.toTypedArray(),qTranslate.locale.eq(locale))
-            .fetchOne()
+            .fetch()
+
+        return query.first()
     }
 
     /**
