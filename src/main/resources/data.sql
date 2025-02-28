@@ -37,12 +37,3 @@ VALUES
        (22,4,'가득한 거리_실내 6탄','콘텐츠 내용','ASK_REVIEW',12000,now()),
        (23,4,'가득한 거리_실내 7탄','콘텐츠 내용','CLEAR_REVIEW',32000,now()),
        (24,4,'가득한 거리_실내 8탄','콘텐츠 내용','CLEAR_REVIEW',51400,now());
-
-INSERT INTO tb_translate_info(translate_id, product_id, translate_code, translate_locale, translate_message, create_at)
-VALUES
-       (1,2,'translate_code_01','ko','낭만과 사랑이 가득한 거리_실내 2탄',now()),
-       (1,2,'translate_code_02','ko','콘텐츠 내용',now()),
-       (1,2,'translate_code_01','ja','낭만과 사랑이 가득한 거리_실내 2탄',now()),
-       (1,2,'translate_code_02','ja','콘텐츠 내용',now()),
-       (1,2,'translate_code_01','en','one stage of love full street',now()),
-       (1,2,'translate_code_02','en','content',now()),
