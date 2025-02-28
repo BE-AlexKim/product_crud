@@ -1,0 +1,79 @@
+package test.system.carpenstreet.api.service.implement
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import test.system.carpenstreet.api.model.dto.LoginRequestDTO
+import test.system.carpenstreet.api.model.dto.SignupRequestDTO
+import test.system.carpenstreet.api.model.entity.User
+import test.system.carpenstreet.api.model.enums.UserRole
+import test.system.carpenstreet.api.repository.UserRepository
+import test.system.carpenstreet.api.service.UserService
+import test.system.carpenstreet.api.validator.factory.UserSignupValidatorFactory
+import test.system.carpenstreet.comn.exception.CarpenStreetException
+import test.system.carpenstreet.comn.exception.ErrorMessage
+import test.system.carpenstreet.comn.security.AuthenticationFacade
+import test.system.carpenstreet.comn.security.jwt.JwtToken
+import test.system.carpenstreet.comn.security.jwt.JwtTokenProvider
+import java.util.UUID
+
+/**
+ *packageName    : test.system.carpenstreet.api.user.service.impl
+ * fileName       : UserServiceImpl
+ * author         : joy58
+ * date           : 2025-02-24
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2025-02-24        joy58       최초 생성
+ */
+@Service
+class UserServiceImpl constructor(
+    private val userRepository: UserRepository,
+    private val authenticationManagerBuilder: AuthenticationManagerBuilder,
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val passwordEncoder: BCryptPasswordEncoder,
+    private val userSignupValidatorFactory: UserSignupValidatorFactory,
+    private val authenticationFacade: AuthenticationFacade
+): UserService {
+
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun login(request: LoginRequestDTO): JwtToken {
+        val authenticationToken = UsernamePasswordAuthenticationToken(request.loginId, request.loginPw)
+        val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
+        val principal = authentication.principal as User
+        return jwtTokenProvider.createJwtToken(principal)
+    }
+
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun signup(request: SignupRequestDTO) {
+        userSignupValidatorFactory.validate(request) // 회원가입 데이터 검증
+
+        userRepository.save(
+            User(
+            uuid = UUID.randomUUID().toString(),
+            loginId = request.loginId,
+            loginPw = passwordEncoder.encode(request.loginPw),
+            phoneNumber = request.phoneNumber,
+            name = request.name,
+            role = UserRole.ROLE_USER
+        )
+        )
+    }
+
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun findByUuid(uuid: String): User {
+        val isExistUser = userRepository.findByUuid(uuid)
+        return if ( isExistUser.isPresent ) {
+            isExistUser.get()
+        }else {
+            throw CarpenStreetException(ErrorMessage.USER_NOT_EXIST)
+        }
+    }
+}

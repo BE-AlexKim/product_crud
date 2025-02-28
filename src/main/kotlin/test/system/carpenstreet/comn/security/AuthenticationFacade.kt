@@ -3,7 +3,7 @@ package test.system.carpenstreet.comn.security
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import test.system.carpenstreet.api.user.model.enums.UserRole
+import test.system.carpenstreet.api.model.enums.UserRole
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 

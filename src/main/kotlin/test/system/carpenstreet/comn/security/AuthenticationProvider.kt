@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import test.system.carpenstreet.api.user.repository.UserRepository
+import test.system.carpenstreet.api.repository.UserRepository
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 
