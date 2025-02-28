@@ -31,24 +31,24 @@ data class Product(
     @Enumerated(EnumType.STRING)
     @Column(name = "product_posting_status")
     @Comment("상품 게시 상태")
-    var productPostingStatus: ProductPostingStatus,
+    var productPostingStatus: ProductPostingStatus = ProductPostingStatus.TEMPORARY,
 
     @Column(name = "product_title")
     @Comment("상품 제목")
-    var productTitle: String?,
+    var productTitle: String? = null,
 
     @Column(name = "product_content", columnDefinition = "TEXT")
     @Comment("상품 본문")
-    var productContent: String?,
+    var productContent: String? = null,
 
     @Column(name = "product_pridce")
     @Comment("상품 가격(원화)")
-    var productPrice: Int?,
+    var productPrice: Int? = null,
 
     @Comment("작가 일련번호")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    val creator: User,
+    val creator: User? = null,
 
     @Comment("상품 버전")
     @Column(name = "product_version")

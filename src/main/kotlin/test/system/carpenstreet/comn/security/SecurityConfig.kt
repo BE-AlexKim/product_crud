@@ -63,6 +63,7 @@ class SecurityConfig constructor(
                     "/api/v1/product/{productId}/under",
                     "/api/v1/product/{productId}/update",
                     "/api/v1/product/{productId}/reject",
+                    "/api/v1/product/{productId}/approve"
                 ).hasAuthority("ROLE_ADMIN")
 
                 .requestMatchers(

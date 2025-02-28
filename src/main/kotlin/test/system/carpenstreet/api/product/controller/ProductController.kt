@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import test.system.carpenstreet.api.product.model.dto.*
-import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.product.service.ProductService
 import test.system.carpenstreet.comn.swagger.document.*
 
@@ -84,28 +83,33 @@ class ProductController constructor(
         return ResponseEntity.ok(true)
     }
 
+    /** 상품 검토 완료 엔드포인트 **/
+    @ProductApproveDocument
+    @PatchMapping("/{productId}/approve")
+    fun approve(@PathVariable productId: Long): ResponseEntity<Boolean> {
+        productService.approveProduct(productId)
+        return ResponseEntity.ok(true)
+    }
+
     /** 상품 목록 조회 엔드포인트 **/
     @ProductSearchDocument
     @GetMapping("/list")
     fun getProducts(
-        @RequestParam uuid: String,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "5") size: Int,
         @RequestParam(defaultValue = "name") sortBy: String,
         @RequestParam(defaultValue = "ASC") direction: Sort.Direction,
     ): ResponseEntity<Page<ProductsResponseDTO>> {
         val pageable = PageRequest.of(page,size, Sort.by(direction, sortBy))
-        return ResponseEntity.ok(productService.getProducts(uuid, pageable))
+        return ResponseEntity.ok(productService.getProducts(pageable))
     }
 
     /** 상품 상세 조회 엔드포인트 **/
     @ProductSearchDetailDocument
     @GetMapping("/{productId}/detail")
-    fun getProduct(@PathVariable productId: Long): ResponseEntity<Product> {
-        val product = productService.getProduct(productId)
+    fun getProduct(@PathVariable productId: Long, @RequestParam locale: String): ResponseEntity<ProductDetailResponseDTO> {
+        val product = productService.getProductDetail(productId, locale)
         return ResponseEntity.ok(product)
     }
-
-
 
 }

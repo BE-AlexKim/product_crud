@@ -1,9 +1,9 @@
 plugins {
-	kotlin("jvm") version "1.9.25"
-	kotlin("plugin.spring") version "1.9.25"
-	kotlin("plugin.jpa") version "1.9.25"
-	kotlin("kapt") version "1.9.25"
-	id("org.springframework.boot") version "3.4.3"
+	kotlin("jvm") version "1.9.22"
+	kotlin("plugin.spring") version "1.9.22"
+	kotlin("plugin.jpa") version "1.9.22"
+	kotlin("kapt") version "1.9.22"
+	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	idea
 }
@@ -56,6 +56,12 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	runtimeOnly("com.mysql:mysql-connector-j")
+
+	// Mockk
+	testImplementation("io.mockk:mockk:1.13.1")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+	testImplementation("com.ninja-squad:springmockk:4.0.2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

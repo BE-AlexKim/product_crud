@@ -14,7 +14,7 @@ VALUES
 INSERT tb_product_info(product_id, user_id, product_title, product_content, product_posting_status, product_pridce, create_at)
 VALUES
        (1,2,'낭만과 사랑이 가득한 거리_실내 1탄','콘텐츠 내용','TEMPORARY',99000,now()),
-       (2,2,'낭만과 사랑이 가득한 거리_실내 2탄','콘텐츠 내용','ASK_REVIEW',59000,now()),
+       (2,2,'translate_code_01','translate_code_02','UNDER_REVIEW',59000,now()),
        (3,2,'낭만과 사랑이 가득한 거리_실내 3탄','콘텐츠 내용','CLEAR_REVIEW',49000,now()),
        (4,2,'낭만과 사랑이 가득한 거리_실내 4탄','콘텐츠 내용','TEMPORARY',39000,now()),
        (5,2,'낭만과 사랑이 가득한 거리_실내 5탄','콘텐츠 내용','REJECT_REVIEW',29000,now()),
@@ -23,8 +23,8 @@ VALUES
        (8,2,'낭만과 사랑이 가득한 거리_실내 8탄','콘텐츠 내용','TEMPORARY',5000,now()),
        (9,3,'사랑이 가득한 거리_실내 1탄','콘텐츠 내용','TEMPORARY',99000,now()),
        (10,3,'사랑이 가득한 거리_실내 2탄','콘텐츠 내용','ASK_REVIEW',30200,now()),
-       (11,3,'사랑이 가득한 거리_실내 3탄','콘텐츠 내용','TEMPORARY',129000,now()),
-       (12,3,'사랑이 가득한 거리_실내 4탄','콘텐츠 내용','ASK_REVIEW',109000,now()),
+       (11,3,'사랑이 가득한 거리_실내 3탄','콘텐츠 내용','UNDER_REVIEW',129000,now()),
+       (12,3,'사랑이 가득한 거리_실내 4탄','콘텐츠 내용','UNDER_REVIEW',109000,now()),
        (13,3,'사랑이 가득한 거리_실내 5탄','콘텐츠 내용','TEMPORARY',229000,now()),
        (14,3,'사랑이 가득한 거리_실내 6탄','콘텐츠 내용','REJECT_REVIEW',13000,now()),
        (15,3,'사랑이 가득한 거리_실내 7탄','콘텐츠 내용','CLEAR_REVIEW',41000,now()),
@@ -32,8 +32,17 @@ VALUES
        (17,4,'가득한 거리_실내 1탄','콘텐츠 내용','TEMPORARY',9900,now()),
        (18,4,'가득한 거리_실내 2탄','콘텐츠 내용','ASK_REVIEW',54000,now()),
        (19,4,'가득한 거리_실내 3탄','콘텐츠 내용','REJECT_REVIEW',49500,now()),
-       (20,4,'가득한 거리_실내 4탄','콘텐츠 내용','ASK_REVIEW',33000,now()),
+       (20,4,'가득한 거리_실내 4탄','콘텐츠 내용','UNDER_REVIEW',33000,now()),
        (21,4,'가득한 거리_실내 5탄','콘텐츠 내용','TEMPORARY',1000,now()),
        (22,4,'가득한 거리_실내 6탄','콘텐츠 내용','ASK_REVIEW',12000,now()),
        (23,4,'가득한 거리_실내 7탄','콘텐츠 내용','CLEAR_REVIEW',32000,now()),
        (24,4,'가득한 거리_실내 8탄','콘텐츠 내용','CLEAR_REVIEW',51400,now());
+
+INSERT INTO tb_translate_info(translate_id, product_id, translate_code, translate_locale, translate_message, create_at)
+VALUES
+       (1,2,'translate_code_01','ko','낭만과 사랑이 가득한 거리_실내 2탄',now()),
+       (1,2,'translate_code_02','ko','콘텐츠 내용',now()),
+       (1,2,'translate_code_01','ja','낭만과 사랑이 가득한 거리_실내 2탄',now()),
+       (1,2,'translate_code_02','ja','콘텐츠 내용',now()),
+       (1,2,'translate_code_01','en','one stage of love full street',now()),
+       (1,2,'translate_code_02','en','content',now()),

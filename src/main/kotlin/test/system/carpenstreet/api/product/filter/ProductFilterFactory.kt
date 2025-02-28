@@ -23,18 +23,19 @@ import test.system.carpenstreet.comn.security.AuthenticationFacade
  */
 @Component
 class ProductFilterFactory constructor(
-    private val productFilters: List<ProductFilter>
+    private val productFilters: List<ProductFilter>,
+    private val authenticationFacade: AuthenticationFacade
 ) {
 
     @Throws(CarpenStreetException::class)
-    fun getFilterByUserRole(user: User): List<BooleanExpression> {
+    fun getProductsFilter(user: User): List<BooleanExpression> {
         val applicableValidator = productFilters.filter { it.supports(user.role) }
 
         if ( applicableValidator.isEmpty() ) {
             throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
         }
 
-        return applicableValidator.map { it.getFilter(user) }
+        return applicableValidator.map { it.getProductsFilter(user) }
     }
 
     @Throws(CarpenStreetException::class)
@@ -43,5 +44,17 @@ class ProductFilterFactory constructor(
             !in listOf(ProductPostingStatus.ASK_REVIEW, ProductPostingStatus.REASK_REVIEW )) {
             throw CarpenStreetException(ErrorMessage.PRODUCT_DO_NOT_CHANGE_POSTING_STATUS)
         }
+    }
+
+    @Throws(CarpenStreetException::class)
+    fun getProductDetailFilter(product: Product): List<BooleanExpression> {
+        val userRole = UserRole.valueOf(authenticationFacade.getUserRole()?:"ROLE_USER")
+        val applicableValidator = productFilters.filter { it.supports(userRole) }
+
+        if ( applicableValidator.isEmpty() ) {
+            throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
+        }
+
+        return applicableValidator.map { it.getProductDetailFilter(product) }
     }
 }

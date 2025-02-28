@@ -38,10 +38,10 @@ interface ProductService {
     /**
      * 상품 검토 완료 ( 매니저 )
      */
-    fun approveProduct()
+    fun approveProduct(productId: Long): Boolean
 
     /**
-     * 상품 수정
+     * 상품 수정 ( 매니저, 작가 )
      */
     fun updateProduct(productId: Long, request: ProductUpdateRequestDTO): Boolean
 
@@ -53,10 +53,14 @@ interface ProductService {
     /**
      * 상품 목록 조회
      */
-    fun getProducts(uuid: String, pageable: Pageable): Page<ProductsResponseDTO>
+    fun getProducts(pageable: Pageable): Page<ProductsResponseDTO>
 
     /**
-     * 상품 상세 조회
+     * 상품 상세 정보 조회
+     */
+    fun getProductDetail(productId: Long, locale: String): ProductDetailResponseDTO?
+    /**
+     * 상품 조회
      */
     fun getProduct(productId: Long): Product
 }

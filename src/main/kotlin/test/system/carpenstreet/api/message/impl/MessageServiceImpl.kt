@@ -50,7 +50,7 @@ class MessageServiceImpl(
             headers.contentType = MediaType.APPLICATION_JSON
             headers[HttpHeaders.AUTHORIZATION] = "Bearer ${messageProperties.secretKey}"
 
-            val phoneNumber = TransformUserInfoUtil.transformPhoneNumber(product.creator.phoneNumber)
+            val phoneNumber = TransformUserInfoUtil.transformPhoneNumber(product.creator?.phoneNumber)
                 ?: throw CarpenStreetException(ErrorMessage.PHONE_NUMBER_NOT_EXIST)
 
             val data = LinkedMultiValueMap<String, String>()

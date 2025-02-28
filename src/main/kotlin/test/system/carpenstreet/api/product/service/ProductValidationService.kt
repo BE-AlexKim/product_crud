@@ -9,6 +9,7 @@ import test.system.carpenstreet.api.product.model.dto.ProductUpdateRequestDTO
 import test.system.carpenstreet.api.product.validator.ProductValidatorFactory
 import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.user.model.entity.User
+import test.system.carpenstreet.api.user.model.enums.UserRole
 
 /**
  *packageName    : test.system.carpenstreet.api.product.service
@@ -33,22 +34,23 @@ class ProductValidationService constructor(
     }
 
     @Transactional
-    fun getFilterByUser(user: User): List<BooleanExpression> {
-        return productFilterFactory.getFilterByUserRole(user)
-    }
-
-    @Transactional
-    fun underProductFilter(product: Product) {
-        productFilterFactory.underProductFilter(product)
-    }
-
-    @Transactional
     fun updateProductValidate(product: Product, request: ProductUpdateRequestDTO) {
         productValidatorFactory.productUpdateValidate(product, request)
     }
 
     @Transactional
-    fun getProductFilter() {
-
+    fun getProductsFilter(user: User): List<BooleanExpression> {
+        return productFilterFactory.getProductsFilter(user)
     }
+
+    @Transactional
+    fun underProductFilterByProduct(product: Product) {
+        productFilterFactory.underProductFilter(product)
+    }
+
+    @Transactional
+    fun getProductDetailFilterByProduct(product: Product):List<BooleanExpression> {
+        return productFilterFactory.getProductDetailFilter(product)
+    }
+
 }

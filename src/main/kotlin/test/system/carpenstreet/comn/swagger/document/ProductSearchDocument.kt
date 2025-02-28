@@ -29,7 +29,6 @@ import java.lang.annotation.Inherited
             "페이지네이션은 page(조회할 페이지), size(조회 갯수), sortBy(소팅 대상), direction(정렬방식) <br>" +
             "을 파라미터로 정리할 수 있습니다.",
     parameters = [
-        Parameter(name = "uuid", description = "사용자 UUID", required = true),
         Parameter(name = "page", description = "조회 페이지", required = false),
         Parameter(name = "size", description = "조회할 게시물 갯수", required = false),
         Parameter(name = "sortBy", description = "정렬 대상", required = false),

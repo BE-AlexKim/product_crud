@@ -2,6 +2,7 @@ package test.system.carpenstreet.api.product.filter
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import org.springframework.stereotype.Component
+import test.system.carpenstreet.api.product.model.entity.Product
 import test.system.carpenstreet.api.product.model.entity.QProduct
 import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
 import test.system.carpenstreet.api.user.model.entity.User
@@ -23,7 +24,7 @@ class ProductPartnerFilter: ProductFilter {
 
     override fun supports(role: UserRole) = role == UserRole.ROLE_PARTNER
 
-    override fun getFilter(user: User): BooleanExpression {
+    override fun getProductsFilter(user: User): BooleanExpression {
         val qProduct = QProduct.product
         return qProduct.productPostingStatus.`in`(
             listOf(
@@ -36,5 +37,20 @@ class ProductPartnerFilter: ProductFilter {
                 ProductPostingStatus.UNDER_REVIEW,
             )
         ).and(qProduct.creator.eq(user))
+    }
+
+    override fun getProductDetailFilter(product: Product): BooleanExpression {
+        val qProduct = QProduct.product
+        return qProduct.productPostingStatus.`in`(
+            listOf(
+                ProductPostingStatus.TEMPORARY,
+                ProductPostingStatus.SAVE_REVIEW,
+                ProductPostingStatus.ASK_REVIEW,
+                ProductPostingStatus.CLEAR_REVIEW,
+                ProductPostingStatus.REASK_REVIEW,
+                ProductPostingStatus.REJECT_REVIEW,
+                ProductPostingStatus.UNDER_REVIEW,
+            )
+        )
     }
 }

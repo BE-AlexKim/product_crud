@@ -6,6 +6,7 @@ import org.hibernate.annotations.Comment
 import test.system.carpenstreet.api.product.model.entity.Product
 import java.time.LocalDateTime
 import java.util.Locale
+import java.util.UUID
 
 /**
  *packageName    : test.system.carpenstreet.api.translate.model.entity
@@ -29,19 +30,19 @@ data class Translate(
 
     @Column(name = "translate_code")
     @Comment("번역 코드값")
-    val translateCode: String,
+    val translateCode: String = UUID.randomUUID().toString(),
 
     @Column(name = "translate_locale", nullable = false, length = 10)
     @Comment("지원 언어")
-    val locale: String,
+    val locale: String = "ko",
 
     @Column(name = "translate_message", columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci", nullable = false)
     @Comment("번역 텍스트")
-    val message: String,
+    val message: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: Product,
+    val product: Product? = null,
 
     @Column(name = "create_at")
     @Comment("최초 생성일시")

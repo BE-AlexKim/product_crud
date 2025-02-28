@@ -46,7 +46,7 @@ class TranslateServiceImpl(
 
     private val restTemplate = RestTemplate()
 
-    private val languages = listOf("en", "ja", "ko")
+    private val languages = listOf("en", "ja")
 
     @Throws(CarpenStreetException::class)
     override fun callTranslateAPI(lang: String, text: String?): TranslateResponseDTO {
@@ -125,7 +125,8 @@ class TranslateServiceImpl(
         }
     }
 
-    private fun saveTranslation(product: Product, translateCode: String, lang: String, translatedText: String) {
+    @Transactional
+    override fun saveTranslation(product: Product, translateCode: String, lang: String, translatedText: String) {
         translateRepository.save(
             Translate(
                 translateCode = translateCode,
@@ -136,5 +137,18 @@ class TranslateServiceImpl(
         )
     }
 
-    private fun generateTranslateCode(): String = UUID.randomUUID().toString()
+    @Transactional
+    override fun saveTranslationIfNeeded(product: Product, locale: String, productTitle: String?, productContent: String?) {
+        productTitle?.let {
+            val translateCode = generateTranslateCode()
+            saveTranslation(product, translateCode, locale, it)
+            product.productTitle = translateCode
+        }
+        productContent?.let {
+            val translateCode = generateTranslateCode()
+            saveTranslation(product, translateCode, locale, it)
+            product.productContent = translateCode
+        }
+    }
+
 }

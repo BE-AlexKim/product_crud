@@ -31,4 +31,5 @@ class ProductUserValidator: ProductValidator {
     override fun productUpdateValidator(product: Product, request: ProductUpdateRequestDTO) {
         throw CarpenStreetException(ErrorMessage.UNSUPPORTED_USER_ROLE)
     }
+
 }
