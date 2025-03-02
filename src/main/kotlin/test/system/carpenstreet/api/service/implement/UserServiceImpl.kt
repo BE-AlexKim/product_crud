@@ -62,8 +62,7 @@ class UserServiceImpl constructor(
             phoneNumber = request.phoneNumber,
             name = request.name,
             role = UserRole.ROLE_USER
-        )
-        )
+        ))
     }
 
     @Transactional
@@ -75,5 +74,12 @@ class UserServiceImpl constructor(
         }else {
             throw CarpenStreetException(ErrorMessage.USER_NOT_EXIST)
         }
+    }
+
+    @Transactional
+    @Throws(CarpenStreetException::class)
+    override fun findByUsername(): User {
+        val uuid = authenticationFacade.getUsername()
+        return findByUuid(uuid)
     }
 }

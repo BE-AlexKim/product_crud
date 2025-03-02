@@ -24,7 +24,7 @@ import java.util.UUID
 @Entity
 @Table(name = "tb_user_info")
 @Comment("사용자")
-data class User(
+class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     @Comment("사용자 일련번호")
@@ -55,6 +55,9 @@ data class User(
     @Enumerated(EnumType.STRING)
     val role: UserRole,
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    val products: List<Product> = mutableListOf(),
+
     @Column(name = "create_at")
     @Comment("최초 생성일시")
     val creatAt: LocalDateTime = LocalDateTime.now(),
@@ -62,7 +65,44 @@ data class User(
     @Column(name = "update_at")
     @Comment("최초 수정일시")
     val updateAt: LocalDateTime? = null
+
 ): UserDetails {
+
+    constructor(loginId: String, loginPw: String): this(
+        id = null,
+        uuid = UUID.randomUUID().toString(),
+        loginId = loginId,
+        loginPw = loginPw,
+        name = null,
+        phoneNumber = null,
+        role = UserRole.ROLE_USER,
+        creatAt = LocalDateTime.now(),
+        updateAt = null
+    )
+
+    constructor(loginId: String, loginPw: String,name: String?): this(
+        id = null,
+        uuid = UUID.randomUUID().toString(),
+        loginId = loginId,
+        loginPw = loginPw,
+        name = name,
+        phoneNumber = null,
+        role = UserRole.ROLE_ADMIN,
+        creatAt = LocalDateTime.now(),
+        updateAt = null
+    )
+
+    constructor(loginId: String, loginPw: String,name: String?, phoneNumber: String?): this(
+        id = null,
+        uuid = UUID.randomUUID().toString(),
+        loginId = loginId,
+        loginPw = loginPw,
+        name = name,
+        phoneNumber = phoneNumber,
+        role = UserRole.ROLE_PARTNER,
+        creatAt = LocalDateTime.now(),
+        updateAt = null
+    )
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(role.name))

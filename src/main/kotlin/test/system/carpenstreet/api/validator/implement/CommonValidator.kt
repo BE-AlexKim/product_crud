@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.model.dto.SignupRequestDTO
 import test.system.carpenstreet.api.model.enums.UserRole
 import test.system.carpenstreet.api.repository.UserRepository
-import test.system.carpenstreet.api.validator.interfaces.UserSignupValidator
+import test.system.carpenstreet.api.validator.interfaces.SignupValidator
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 import test.system.carpenstreet.comn.exception.ErrorMessage
 
@@ -22,13 +22,13 @@ import test.system.carpenstreet.comn.exception.ErrorMessage
 @Component
 class CommonValidator(
     private val userRepository: UserRepository
-): UserSignupValidator {
+): SignupValidator {
 
     // 모든 사용자에게 적용
     override fun supports(role: UserRole) = true
 
     @Throws(CarpenStreetException::class)
-    override fun validate(request: SignupRequestDTO) {
+    override fun signUpValidate(request: SignupRequestDTO) {
         require(request.loginId.isNotEmpty()) { throw CarpenStreetException(ErrorMessage.LOGIN_ID_REQUIRE_VALUE)}
         require(!userRepository.existsByLoginId(request.loginId)) {
             throw CarpenStreetException(ErrorMessage.DUPLICATE_LOGIN_ID)

@@ -1,23 +1,26 @@
 package test.system.carpenstreet.product
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
-import io.mockk.verify
+import io.mockk.*
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import test.system.carpenstreet.api.product.controller.ProductController
-import test.system.carpenstreet.api.product.model.dto.ProductTemporalRequestDTO
-import test.system.carpenstreet.api.product.model.enums.ProductPostingStatus
-import test.system.carpenstreet.api.product.service.ProductService
+import test.system.carpenstreet.api.model.dto.SetProductRequestDTO
+import test.system.carpenstreet.api.model.entity.Product
+import test.system.carpenstreet.api.model.entity.Translate
+import test.system.carpenstreet.api.model.enums.Language
+import test.system.carpenstreet.api.repository.ProductRepository
+import test.system.carpenstreet.api.service.ProductService
+import test.system.carpenstreet.api.service.TranslateService
+import test.system.carpenstreet.api.service.implement.ProductServiceImpl
+import test.system.carpenstreet.api.validator.factory.ProductValidatorFactory
 
 
 /**
@@ -32,42 +35,63 @@ import test.system.carpenstreet.api.product.service.ProductService
  * 2025-02-28        joy58       최초 생성
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockKExtension::class)
 class ProductServiceTest {
 
-    private lateinit var mockMvc: MockMvc
+    @MockK
+    private lateinit var translateService: TranslateService
 
-    @MockkBean
-    private lateinit var productService: ProductService
+    @MockK
+    private lateinit var productRepository: ProductRepository
+
+    @MockK
+    private lateinit var productValidatorFactory: ProductValidatorFactory
+
+    @InjectMockKs
+    private lateinit var productService: ProductServiceImpl
 
     @BeforeEach
     fun setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(ProductController(productService)).build()
+        MockKAnnotations.init(this)
     }
 
-
     @Test
-    @WithMockUser(username = "test-user-002", roles = ["PARTNER"])
-    fun `상품 생성 API 테스트`() {
+    @WithMockUser(username = "text-user-002", roles = ["PARTNER"])
+    fun `setProduct 상품을 저장하고 번역을 생성하는 테스트`() {
 
-        val request = ProductTemporalRequestDTO(
-            postingStatus = ProductPostingStatus.TEMPORARY,
-            productId = null,
-            productTitle = "제목",
-            productPrice = 10000,
-            productContent = "콘텐츠"
+        // Given 상품 제목과 콘텐츠 가격
+        val request = SetProductRequestDTO(
+            title = "테스트 타이틀 상품",
+            content = "테스트 상품 설명",
+            price = 10000L
         )
-        val requestJson = ObjectMapper().writeValueAsString(request)
 
-        mockMvc.perform(
-            post("/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson)
+        val fakeProduct = Product(request.title, request.content, request.price)
+
+        val fakeTranslations = listOf(
+            Translate(
+                text = request.content,
+                Language.KOREAN,
+                fakeProduct
+            ),
+            Translate(
+                text = request.title,
+                Language.KOREAN,
+                fakeProduct
+            )
         )
-            .andExpect(status().isOk)
-            .andExpect(content().string("true"))
 
-        verify { productService.createProduct(any()) }
+        // Do
+        every { productValidatorFactory.createProductValidate() } returns mockk()
+        every { productRepository.save(any()) } returns  fakeProduct
+        every { translateService.createTranslate(any(), any()) } returns fakeTranslations
+
+        // When
+        productService.setProduct(request)
+
+        // Then
+        verify { productRepository.save(any()) }
+        verify { translateService.createTranslate(fakeProduct, Language.KOREAN) }
     }
 
 }

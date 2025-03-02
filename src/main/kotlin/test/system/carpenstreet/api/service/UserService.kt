@@ -27,4 +27,6 @@ interface UserService {
 
     fun findByUuid(uuid: String): User
 
+    fun findByUsername(): User
+
 }

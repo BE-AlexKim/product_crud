@@ -3,7 +3,7 @@ package test.system.carpenstreet.comn.querydsl
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.ComparableExpressionBase
 import org.springframework.data.domain.Sort
-import test.system.carpenstreet.api.product.model.entity.QProduct
+import test.system.carpenstreet.api.model.entity.QProduct
 
 /**
  *packageName    : test.system.carpenstreet.comn.querydsl
@@ -21,9 +21,8 @@ object QueryDslExtensions {
     fun Sort.toQueryDslOrder(qProduct: QProduct): Array<OrderSpecifier<*>> {
         return this.mapNotNull { order ->
             val path: ComparableExpressionBase<*>? = when (order.property) {
-                "title" -> qProduct.productTitle
-                "status" -> qProduct.productPostingStatus
-                "name" -> qProduct.creator.name
+                "title" -> qProduct.title
+                "status" -> qProduct.status
                 else -> null
             }
             path?.let {
