@@ -2,6 +2,7 @@ package test.system.carpenstreet.api.validator.implement
 
 import org.springframework.stereotype.Component
 import test.system.carpenstreet.api.model.dto.SignupRequestDTO
+import test.system.carpenstreet.api.model.entity.Product
 import test.system.carpenstreet.api.model.enums.ProductStatus
 import test.system.carpenstreet.api.model.enums.UserRole
 import test.system.carpenstreet.api.validator.interfaces.ProductValidator
@@ -29,6 +30,10 @@ class UserValidator: SignupValidator, ProductValidator {
 
     @Throws(CarpenStreetException::class)
     override fun createProductValidator(): Boolean {
+        throw CarpenStreetException(ErrorMessage.ACCESS_DENIED)
+    }
+
+    override fun updateProductValidator(product: Product) {
         throw CarpenStreetException(ErrorMessage.ACCESS_DENIED)
     }
 }

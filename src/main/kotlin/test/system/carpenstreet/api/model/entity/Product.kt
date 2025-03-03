@@ -59,7 +59,7 @@ class Product (
     val createAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "update_at")
-    val updateAt: LocalDateTime?
+    var updateAt: LocalDateTime?
 
 ){
     // 기본 생성자
@@ -75,13 +75,40 @@ class Product (
         updateAt = null
     )
 
-    constructor(title: String, content: String, price: Long, user: User): this (
+    constructor(id: Long, title: String, content: String, price: Long, status: ProductStatus, isActive: Boolean, version: Int, user: User?): this(
+        id = id,
+        title = title,
+        content = content,
+        price = price,
+        status = status,
+        version = version,
+        isActive = isActive,
+        user = user,
+        createAt = LocalDateTime.now(),
+        updateAt = null
+    )
+
+    constructor(title: String, content: String, price: Long, user: User?): this (
         id = null,
         status = ProductStatus.TEMPORARY,
         title = title,
         content = content,
         price = price,
         version = 1,
+        isActive = false,
+        user = user,
+        createAt = LocalDateTime.now(),
+        updateAt = null
+    )
+
+    // 기존 상품을 수정할 경우
+    constructor(status: ProductStatus, title: String, content: String, price: Long, version: Int, user: User?): this (
+        id = null,
+        status = status,
+        title = title,
+        content = content,
+        price = price,
+        version = version,
         isActive = false,
         user = user,
         createAt = LocalDateTime.now(),

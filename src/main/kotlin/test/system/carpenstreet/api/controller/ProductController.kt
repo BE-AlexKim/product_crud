@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import test.system.carpenstreet.api.model.dto.SetProductRequestDTO
+import test.system.carpenstreet.api.model.dto.ProductGenerateRequestDTO
 import test.system.carpenstreet.api.service.ProductService
 
 /**
@@ -28,8 +28,8 @@ class ProductController(
 ) {
 
     @PostMapping("/create")
-    fun create(@RequestBody request: SetProductRequestDTO): ResponseEntity<Map<String,Boolean>> {
-        productService.setProduct(request)
+    fun create(@RequestBody request: ProductGenerateRequestDTO): ResponseEntity<Map<String,Boolean>> {
+        productService.setProductGenerated(request)
         return ResponseEntity.ok(mapOf("result" to true))
     }
 

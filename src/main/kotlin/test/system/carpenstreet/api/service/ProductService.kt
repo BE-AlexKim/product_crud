@@ -1,6 +1,8 @@
 package test.system.carpenstreet.api.service
 
-import test.system.carpenstreet.api.model.dto.SetProductRequestDTO
+import test.system.carpenstreet.api.model.dto.ProductGenerateRequestDTO
+import test.system.carpenstreet.api.model.dto.ProductUpdateRequestDTO
+import test.system.carpenstreet.api.model.entity.Product
 
 /**
  *packageName    : test.system.carpenstreet.api.service
@@ -21,6 +23,8 @@ interface ProductService {
 
     fun getProducts()
 
-    fun setProduct(request: SetProductRequestDTO)
+    fun setProductGenerated(request: ProductGenerateRequestDTO): Product
+
+    fun updateProduct(productId: Long, request: ProductUpdateRequestDTO)
 
 }

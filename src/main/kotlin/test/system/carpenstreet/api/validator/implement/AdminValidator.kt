@@ -1,7 +1,9 @@
 package test.system.carpenstreet.api.validator.implement
 
 import org.springframework.stereotype.Component
+import test.system.carpenstreet.api.model.dto.ProductUpdateRequestDTO
 import test.system.carpenstreet.api.model.dto.SignupRequestDTO
+import test.system.carpenstreet.api.model.entity.Product
 import test.system.carpenstreet.api.model.enums.ProductStatus
 import test.system.carpenstreet.api.model.enums.UserRole
 import test.system.carpenstreet.api.validator.interfaces.ProductValidator
@@ -33,5 +35,12 @@ class AdminValidator: SignupValidator, ProductValidator {
     @Throws(CarpenStreetException::class)
     override fun createProductValidator(): Boolean {
         throw CarpenStreetException(ErrorMessage.ACCESS_DENIED)
+    }
+
+    @Throws(CarpenStreetException::class)
+    override fun updateProductValidator(product: Product) {
+        if ( product.status != ProductStatus.REJECT ) {
+            throw CarpenStreetException("관리자는 검토 거절된 상품만 수정가능합니다.")
+        }
     }
 }

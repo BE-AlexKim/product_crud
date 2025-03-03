@@ -1,7 +1,10 @@
 package test.system.carpenstreet.api.validator.interfaces
 
+import test.system.carpenstreet.api.model.dto.ProductUpdateRequestDTO
+import test.system.carpenstreet.api.model.entity.Product
 import test.system.carpenstreet.api.model.enums.ProductStatus
 import test.system.carpenstreet.api.model.enums.UserRole
+import test.system.carpenstreet.comn.exception.CarpenStreetException
 
 /**
  *packageName    : test.system.carpenstreet.api.service
@@ -16,8 +19,13 @@ import test.system.carpenstreet.api.model.enums.UserRole
  */
 interface ProductValidator {
 
+    @Throws(CarpenStreetException::class)
     fun supports(role: UserRole): Boolean
 
+    @Throws(CarpenStreetException::class)
     fun createProductValidator(): Boolean
+
+    @Throws(CarpenStreetException::class)
+    fun updateProductValidator(product: Product)
 
 }
