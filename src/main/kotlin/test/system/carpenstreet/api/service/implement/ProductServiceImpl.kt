@@ -35,10 +35,6 @@ class ProductServiceImpl(
     private val productValidatorFactory: ProductValidatorFactory
 ) : ProductService {
 
-    override fun getProduct() {
-        TODO("Not yet implemented")
-    }
-
     override fun getProducts() {
         TODO("Not yet implemented")
     }
@@ -48,7 +44,7 @@ class ProductServiceImpl(
     }
 
     @Throws(CarpenStreetException::class)
-    fun findById(productId: Long): Product {
+    override fun getProduct(productId: Long): Product {
         return productRepository.findById(productId)
             .orElseGet { throw CarpenStreetException(ErrorMessage.PRODUCT_NOT_EXIST) }
     }
@@ -74,7 +70,7 @@ class ProductServiceImpl(
     @Transactional
     @Throws(CarpenStreetException::class)
     override fun updateProduct(productId: Long, request: ProductUpdateRequestDTO) {
-        val product = findById(productId)
+        val product = getProduct(productId)
         productValidatorFactory.productUpdateValidator(product)
 
         when {

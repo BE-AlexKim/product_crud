@@ -1,8 +1,6 @@
 package test.system.carpenstreet.api.validator.interfaces
 
-import test.system.carpenstreet.api.model.dto.ProductUpdateRequestDTO
 import test.system.carpenstreet.api.model.entity.Product
-import test.system.carpenstreet.api.model.enums.ProductStatus
 import test.system.carpenstreet.api.model.enums.UserRole
 import test.system.carpenstreet.comn.exception.CarpenStreetException
 
